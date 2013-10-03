@@ -1,7 +1,8 @@
 {
-  "name": "grunt-deploy",
+  "name": "grunt-ssh-deploy",
   "description": "simple capistranoesque deployment of grunt projects to remote servers via symlink switch",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "repository":"git@github.com:code-vicar/grunt-ssh-deploy.git",
   "homepage": "http://www.treestructure.de",
   "author": {
     "name": "Martin Baum",
