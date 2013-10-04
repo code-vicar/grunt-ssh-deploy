@@ -94,7 +94,7 @@
             excludeList += " --exclude='./" + item + "'";
           });
         }
-        var command = "tar -czvf --ignore-failed-read deploy.tgz ." + excludeList;
+        var command = "tar -czvf ." + excludeList;
         execLocal(command, callback);
       };
       // upload zipfile to server via scp
