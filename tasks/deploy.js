@@ -162,12 +162,12 @@
       // updating forever upstart symlink
       var changeUpstartSymlink = function(callback) {
         //only run this if given 'upstart' options
-        if (options.upstart && options.upstart.file_path && option.upstart.file_name) {
+        if (options.upstart && options.upstart.file_path && options.upstart.file_name) {
           grunt.log.subhead('-------------------------------SWITCH UPSTART SYMLINK');
 
-          var appname = option.upstart.file_name.substr(0, option.upstart.file_name.lastIndexOf('.')) || option.upstart.file_name;
+          var appname = options.upstart.file_name.substr(0, options.upstart.file_name.lastIndexOf('.')) || options.upstart.file_name;
           var stopUpstart = "stop " + appname;
-          var updateSym    = 'ln -nfs ' + options.upstart.file_path + '/' + option.upstart.file_name + ' ' + '/etc/init/' + option.upstart.file_name;
+          var updateSym    = 'ln -nfs ' + options.upstart.file_path + '/' + options.upstart.file_name + ' ' + '/etc/init/' + options.upstart.file_name;
           var startUpstart = "start " + appname;
           var command = stopUpstart + " && " + updateSym + " && " + startUpstart;
           exec(command, options.debug, callback);
@@ -193,10 +193,10 @@
       // updating nginx symlink
       var changeNginxConfSymlink = function(callback) {
         //only run this if given 'nginx' options
-        if (options.nginx && options.nginx.file_path && option.nginx.file_name) {
+        if (options.nginx && options.nginx.file_path && options.nginx.file_name) {
           grunt.log.subhead('-------------------------------UPDATE NGINX SITES_ENABLED SYMLINK');
           
-          var command = 'ln -nfs ' + options.nginx.file_path + '/' + option.nginx.file_name + ' ' + '/etc/nginx/sites-enabled/' + option.nginx.file_name;
+          var command = 'ln -nfs ' + options.nginx.file_path + '/' + options.nginx.file_name + ' ' + '/etc/nginx/sites-enabled/' + options.nginx.file_name;
           exec(command, options.debug, callback);
         } else {
           callback();
