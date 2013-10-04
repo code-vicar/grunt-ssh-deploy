@@ -94,7 +94,7 @@
             excludeList += " --exclude='./" + item + "'";
           });
         }
-        var command = "tar -czvf ." + excludeList;
+        var command = "tar -czvf deploy.tgz ." + excludeList;
         execLocal(command, callback);
       };
       // upload zipfile to server via scp
