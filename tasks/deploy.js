@@ -14,6 +14,7 @@
     var moment = require('moment');
     var timeStamp = moment().format('YYYYMMDDHHmmssSSS');
     var options = self.options();
+    var maxBuffer = 800 * 1024;
     var async = require('async');
 
 
@@ -47,7 +48,7 @@
       
       var execLocal = function(cmd, next) {
         var nextFun = next; 
-        childProcessExec(cmd, function(err, stdout, stderr){
+        childProcessExec(cmd, {maxBuffer:maxBuffer}, function(err, stdout, stderr){
           grunt.log.debug(cmd); 
           grunt.log.debug('stdout: ' + stdout);
           grunt.log.debug('stderr: ' + stderr);
@@ -93,7 +94,7 @@
             excludeList += " --exclude='./" + item + "'";
           });
         }
-        var command = "tar -czvf deploy.tgz ." + excludeList;
+        var command = "tar -czvf --ignore-failed-read deploy.tgz ." + excludeList;
         execLocal(command, callback);
       };
       // upload zipfile to server via scp
