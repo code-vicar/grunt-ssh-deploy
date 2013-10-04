@@ -163,13 +163,19 @@
       var changeUpstartSymlink = function(callback) {
         //only run this if given 'upstart' options
         if (options.upstart && options.upstart.file_path && options.upstart.file_name) {
-          grunt.log.subhead('-------------------------------SWITCH UPSTART SYMLINK');
+          grunt.log.subhead('-------------------------------INIT UPSTART SCRIPT');
 
           var appname = options.upstart.file_name.substr(0, options.upstart.file_name.lastIndexOf('.')) || options.upstart.file_name;
-          var stopUpstart = "stop " + appname;
-          var updateSym    = 'ln -nfs ' + options.upstart.file_path + '/' + options.upstart.file_name + ' ' + '/etc/init/' + options.upstart.file_name;
-          var startUpstart = "start " + appname;
-          var command = stopUpstart + " && " + updateSym + " && " + startUpstart;
+          var sudoExec = 'echo ' + server.sudopassword + ' | sudo -S ';
+          var stopUpstart = sudoExec + 'stop ' + appname;
+          var copyUpstart = sudoExec + 'cp -f ' + options.upstart.file_path + '/' + options.upstart.file_name + ' ' + '/etc/init/' + options.upstart.file_name;
+          var startUpstart = sudoExec + 'start ' + appname;
+          if (options.upstart.cold && options.upstart.cold===true) {
+            var command = copyUpstart + " && " + startUpstart;
+          } else {
+            var command = stopUpstart + " && " + copyUpstart + " && " + startUpstart;
+          }
+          
           exec(command, options.debug, callback);
         } else {
           callback();
@@ -182,8 +188,8 @@
         if (options.app_start && options.app_start.node_exec && options.app_start.file_path && options.app_start.file_name) {
           grunt.log.subhead('-------------------------------START APPLICATION');
 
-          var full_script_path = options.app_start.file_path + "/" + options.app_start.file_name;
-          var command = options.app_start.node_exec + " " + full_script_path;
+          var full_script_path = options.app_start.file_path + '/' + options.app_start.file_name;
+          var command = options.app_start.node_exec + ' ' + full_script_path;
           exec(command, options.debug, callback);
         } else {
           callback();
@@ -196,7 +202,7 @@
         if (options.nginx && options.nginx.file_path && options.nginx.file_name) {
           grunt.log.subhead('-------------------------------UPDATE NGINX SITES_ENABLED SYMLINK');
           
-          var command = 'ln -nfs ' + options.nginx.file_path + '/' + options.nginx.file_name + ' ' + '/etc/nginx/sites-enabled/' + options.nginx.file_name;
+          var command = 'echo ' + server.sudopassword + ' | sudo -S ln -nfs ' + options.nginx.file_path + '/' + options.nginx.file_name + ' ' + '/etc/nginx/sites-enabled/' + options.nginx.file_name;
           exec(command, options.debug, callback);
         } else {
           callback();
