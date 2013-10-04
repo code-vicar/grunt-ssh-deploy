@@ -159,6 +159,50 @@
         }
       };
 
+      // updating forever upstart symlink
+      var changeUpstartSymlink = function(callback) {
+        //only run this if given 'upstart' options
+        if (options.upstart && options.upstart.file_path && option.upstart.file_name) {
+          grunt.log.subhead('-------------------------------SWITCH UPSTART SYMLINK');
+
+          var appname = option.upstart.file_name.substr(0, option.upstart.file_name.lastIndexOf('.')) || option.upstart.file_name;
+          var stopUpstart = "stop " + appname;
+          var updateSym    = 'ln -nfs ' + options.upstart.file_path + '/' + option.upstart.file_name + ' ' + '/etc/init/' + option.upstart.file_name;
+          var startUpstart = "start " + appname;
+          var command = stopUpstart + " && " + updateSym + " && " + startUpstart;
+          exec(command, options.debug, callback);
+        } else {
+          callback();
+        }
+      };
+
+      // start/restart application scripts
+      var startApplication = function(callback) {
+        //only run this if given 'app_start' options
+        if (options.app_start && options.app_start.node_exec && options.app_start.file_path && options.app_start.file_name) {
+          grunt.log.subhead('-------------------------------START APPLICATION');
+
+          var full_script_path = options.app_start.file_path + "/" + options.app_start.file_name;
+          var command = options.app_start.node_exec + " " + full_script_path;
+          exec(command, options.debug, callback);
+        } else {
+          callback();
+        }
+      };
+
+      // updating nginx symlink
+      var changeNginxConfSymlink = function(callback) {
+        //only run this if given 'nginx' options
+        if (options.nginx && options.nginx.file_path && option.nginx.file_name) {
+          grunt.log.subhead('-------------------------------UPDATE NGINX SITES_ENABLED SYMLINK');
+          
+          var command = 'ln -nfs ' + options.nginx.file_path + '/' + option.nginx.file_name + ' ' + '/etc/nginx/sites-enabled/' + option.nginx.file_name;
+          exec(command, options.debug, callback);
+        } else {
+          callback();
+        }
+      };
+
       // closing connection to remote server
       var closeConnection = function(callback) {
         connection.end();
@@ -184,6 +228,9 @@
         changeSymLink,
         localCleanup,
         executePostCommands,
+        changeUpstartSymlink,
+        startApplication,
+        changeNginxConfSymlink,
         closeConnection
       ]);
     };
