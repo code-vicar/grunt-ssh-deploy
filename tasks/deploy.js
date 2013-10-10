@@ -203,6 +203,7 @@
           grunt.log.subhead('-------------------------------UPDATE NGINX SITES_ENABLED SYMLINK');
           
           var command = 'echo ' + server.sudopassword + ' | sudo -S ln -nfs ' + options.nginx.file_path + '/' + options.nginx.file_name + ' ' + '/etc/nginx/sites-enabled/' + options.nginx.file_name;
+          command += ' && echo ' + server.sudopassword + ' | sudo -S service nginx reload'
           exec(command, options.debug, callback);
         } else {
           callback();
